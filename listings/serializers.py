@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Booking, Review, Listing
+from .models import Booking, Review, Listing, Payment
 
 
 class BookingSerializer(serializers.Serializer):
@@ -54,4 +54,21 @@ class ReviewSerializer(serializers.Serializer):
             "user_id",
             "rating",
             "comment",
+        ]
+
+
+class PaymentSerializer(serializers.Serializer):
+    """
+    Serializer for payments model
+    """
+
+    class Meta:
+        model = Payment
+        fields = [
+            "payment_id",
+            "booking_id",
+            "amount",
+            "created_at",
+            "payment_method",
+            "transaction_id" "status",
         ]

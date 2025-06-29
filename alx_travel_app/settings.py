@@ -30,7 +30,8 @@ environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env("SECRET_KEY")
 # SECRET_KEY = "django-insecure-#nw!lv=z#$os4=3q5q8$2-d^0&%x)bdr9_lz-69eu-91#w6(of"
-
+CHAPA_SECRET_KEY = env("CHAPA_SECRET_KEY")
+CHAPA_API_URL = env("CHAPA_API_URL")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool("DEBUG", default=False)
 

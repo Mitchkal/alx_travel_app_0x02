@@ -7,7 +7,9 @@ from django.utils.timezone import now
 from django.core.exceptions import ValidationError
 
 
+chapa_secret_key = settings.CHAPA_SECRET_KEY
 # Create your models here.
+
 
 class Listing(models.Model):
     property_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -113,6 +115,50 @@ class Review(models.Model):
 
     def __str__(self):
         return f"Review {self.review_id} for {self.property_id}"
+
+
+class Payment(models.Model):
+    """
+    Model to handle payments for booking
+    """
+
+    class Status(models.TextChoices):
+        PENDING = "PENDING", "Pending"
+        COMPLETED = "COMPLETED", "Completed"
+        Failed = "FAILED", "Failed"
+
+    booking_id = models.ForeignKey(
+        Booking, on_delete=models.CASCADE, related_name="payments"
+    )
+    payment_id = models.UUIDField(
+        primary_key=True, default=uuid.uuid4(), editable=False
+    )
+    amount = models.DecimalField(
+        max_digits=12, decimal_places=2, validators=[MinValueValidator(0.01)]
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    payment_method = models.CharField(
+        max_length=50, choices=[("CHAPA", "Chapa"), ("CASH", "Cash")], default="CHAPA"
+    )
+    transaction_id = models.CharField(
+        max_length=100, unique=True, blank=True, null=True
+    )
+
+    status = models.CharField(
+        max_length=20, choices=Status.choices, default=Status.PENDING
+    )
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"Payment {self.payment_id}  for Booking {self.booking_id.booking_id}"
+
+    def get_amount(self):
+        """
+        helper to get amount
+        """
+        return self.amount if self.amount else 0.00
 
 
 # Create your models here.
